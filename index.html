@@ -43,7 +43,7 @@ input{font:inherit;font-size:14px;padding:8px 10px;width:110px;border-radius:10p
   <button id="mt" aria-label="Music">🎵</button>
 </div>
 <div class="bar" id="net" style="display:none"><button id="mk">Create game</button><input id="jc" maxlength="5" placeholder="Code" autocapitalize="characters" autocomplete="off"><button id="jn">Join</button></div>
-<div id="room" style="display:none"><span id="rc"></span><button id="cp">Copy code</button></div>
+<div id="room" style="display:none"><span id="rc"></span><button id="cp">Share invite</button></div>
 <div class="bar" id="pick"><span style="font-size:14px">You play:</span><button class="sw on" id="cr" aria-label="Red"></button><button class="sw" id="cy" aria-label="Yellow"></button><button id="nw">New game</button></div>
 <div id="series" style="font-size:13px;opacity:.75;margin-bottom:2px"></div>
 <div id="status"><span id="dot"></span><span id="st"></span></div>
@@ -437,8 +437,8 @@ $('jn').onclick=()=>{
   if(c.length===5)enter(c,false);else netMsg('Enter the 5-character code');
 };
 $('cp').onclick=async()=>{
-  const msg='Join my Connect 4 game! Code: '+roomCode;
-  try{if(navigator.share)await navigator.share({text:msg});else await navigator.clipboard.writeText(roomCode);$('cp').textContent='Copied!';setTimeout(()=>$('cp').textContent='Copy code',1500)}catch(e){}
+  const msg='Join my Connect 4 game! Code: '+roomCode+'\nhttps://lst-2k.github.io/connect4/?code='+roomCode;
+  try{if(navigator.share)await navigator.share({text:msg});else await navigator.clipboard.writeText(msg);$('cp').textContent='Copied!';setTimeout(()=>$('cp').textContent='Share invite',1500)}catch(e){}
 };
 /* ---- background music ---- */
 const bgm=new Audio('connect4.mp3');bgm.loop=true;bgm.volume=.3;bgm.preload='auto';
@@ -457,6 +457,7 @@ $('mt').onclick=()=>{
 };
 musicUI();
 reset();draw();
+try{const pc=new URLSearchParams(location.search).get('code');if(pc){setMode('net');$('jc').value=pc.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}}catch(e){}
 /* ---- animated background ---- */
 (function(){
   const bg=document.getElementById('bg'),b=bg.getContext('2d');
