@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Connect 4</title>
+<title>CO44ECT</title>
 <script>window.FBready=new Promise(r=>{window._fbr=r});</script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#e9e5d8;--bg2:#cfc8b4;--fg:#1d2433;--card:#fff;--line:#d0cbb9}
@@ -12,7 +12,22 @@
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:radial-gradient(ellipse at 50% 30%,var(--bg),var(--bg2));color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;padding:14px 12px 24px;min-height:100vh}
-h1{margin:4px 0 10px;font-size:22px;letter-spacing:.5px}
+h1{margin:2px 0 14px;line-height:1;font-family:"Arial Black","Segoe UI Black",Impact,system-ui,sans-serif;font-weight:900;font-size:clamp(38px,11.5vw,66px);letter-spacing:1px;text-align:center;white-space:nowrap}
+h1 span{display:inline-block;background:linear-gradient(180deg,var(--l) 0%,var(--c) 52%,var(--d) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(1px 1px 0 var(--d)) drop-shadow(1px 1px 0 var(--d)) drop-shadow(1px 1px 0 var(--d)) drop-shadow(1px 1px 0 var(--d)) drop-shadow(1px 1px 0 var(--d)) drop-shadow(0 9px 6px rgba(0,0,0,.4));
+  animation:bob 2.8s ease-in-out infinite;animation-delay:calc(var(--i)*.12s)}
+h1 .r{--l:#ffa59d;--c:#ee2b21;--d:#8a0d0d}
+h1 .y{--l:#fff9b0;--c:#ffd21f;--d:#a06c00}
+h1 .b{--l:#9cc8ff;--c:#2f7cf0;--d:#0c3584;font-size:1.45em;line-height:.8;margin:0 .02em;transform:rotate(-5deg)}
+h1 .b+.b{transform:rotate(5deg)}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.pulse{animation:pj 1s ease-in-out infinite;background:#1fae5b!important;color:#fff!important;border-color:#1fae5b!important;font-weight:700}
+@keyframes pj{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(31,174,91,.65)}50%{transform:scale(1.12);box-shadow:0 0 0 12px rgba(31,174,91,0)}}
+@media (prefers-reduced-motion:reduce){h1 span,.pulse{animation:none}}
+#nm{text-transform:none;letter-spacing:0;width:130px}
+#toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translate(-50%,-140%);background:#1fae5b;color:#fff;font-weight:800;font-size:18px;padding:12px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:50;opacity:0;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{animation:tst 4s ease forwards}
+@keyframes tst{0%{opacity:0;transform:translate(-50%,-140%)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-140%)}}
 .bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px;align-items:center}
 button,select{font:inherit;font-size:14px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
 button.on{background:#1f5fd1;color:#fff;border-color:#1f5fd1}
@@ -26,13 +41,30 @@ button.on{background:#1f5fd1;color:#fff;border-color:#1f5fd1}
 canvas{width:100%;max-width:520px;height:auto;touch-action:manipulation;display:block;filter:drop-shadow(0 16px 14px rgba(0,0,0,.4))}
 input{font:inherit;font-size:14px;padding:8px 10px;width:110px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);text-transform:uppercase;letter-spacing:2px;text-align:center}
 #room{display:flex;gap:10px;align-items:center;margin:2px 0 6px;font-size:15px;font-weight:600}
-.score{display:flex;gap:18px;font-size:14px;margin-top:10px}
-.score b{font-size:16px}
+.score{display:flex;gap:10px;width:100%;max-width:520px;margin-top:16px;align-items:stretch}
+.sc{flex:1.3;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:9px 6px 10px;text-align:center;box-shadow:0 6px 14px rgba(0,0,0,.18);transition:border-color .25s,box-shadow .25s,transform .25s;min-width:0}
+.sc.d{flex:.8}
+.sc .nm{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;justify-content:center;gap:6px;opacity:.9}
+.sc .nm span{overflow:hidden;text-overflow:ellipsis}
+.sc .dsc{width:16px;height:16px;border-radius:50%;flex:none;box-shadow:0 2px 3px rgba(0,0,0,.35)}
+.sc b{display:block;font-size:50px;line-height:1.05;font-weight:900;font-family:"Arial Black",Impact,system-ui,sans-serif}
+.sc.r b{color:#ff4a3f;text-shadow:0 2px 0 #8a0d0d,0 3px 0 #8a0d0d,0 8px 10px rgba(0,0,0,.4)}
+.sc.y b{color:#ffd21f;text-shadow:0 2px 0 #a06c00,0 3px 0 #a06c00,0 8px 10px rgba(0,0,0,.4)}
+.sc.d b{font-size:32px;color:#8e97ad;text-shadow:0 2px 0 #4c5468,0 6px 8px rgba(0,0,0,.3);margin-top:6px}
+.sc.r .pips{color:#ee2b21}.sc.y .pips{color:#f2b600}
+.pips{display:flex;gap:5px;justify-content:center;margin-top:5px;min-height:13px;flex-wrap:wrap}
+.pip{display:block;width:11px;height:11px;border-radius:50%;border:2px solid currentColor;opacity:.45}
+.pip.f{background:currentColor;opacity:1;box-shadow:0 0 6px currentColor}
+.sc.turn.r{border-color:#ee2b21;box-shadow:0 0 0 4px rgba(238,43,33,.35),0 8px 18px rgba(0,0,0,.3);transform:translateY(-3px)}
+.sc.turn.y{border-color:#ffd21f;box-shadow:0 0 0 4px rgba(255,210,31,.4),0 8px 18px rgba(0,0,0,.3);transform:translateY(-3px)}
+.sc.win{border-color:gold;box-shadow:0 0 0 4px rgba(255,200,0,.55),0 8px 18px rgba(0,0,0,.3);animation:wn 1s ease-in-out infinite}
+@keyframes wn{50%{transform:scale(1.05)}}
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
-<h1>Connect 4</h1>
+<div id="toast" role="status" aria-live="polite"></div>
+<h1 aria-label="CO44ECT"><span class="r" style="--i:0" aria-hidden="true">C</span><span class="y" style="--i:1" aria-hidden="true">O</span><span class="b" style="--i:2" aria-hidden="true">4</span><span class="b" style="--i:3" aria-hidden="true">4</span><span class="r" style="--i:4" aria-hidden="true">E</span><span class="y" style="--i:5" aria-hidden="true">C</span><span class="r" style="--i:6" aria-hidden="true">T</span></h1>
 <div class="bar">
   <button id="m2">2 Players</button>
   <button id="mb" class="on">vs Bot</button>
@@ -42,18 +74,18 @@ input{font:inherit;font-size:14px;padding:8px 10px;width:110px;border-radius:10p
   <button id="mu" aria-label="Sound effects">🔊</button>
   <button id="mt" aria-label="Music">🎵</button>
 </div>
-<div class="bar" id="net" style="display:none"><button id="mk">Create game</button><input id="jc" maxlength="5" placeholder="Code" autocapitalize="characters" autocomplete="off"><button id="jn">Join</button></div>
+<div class="bar" id="net" style="display:none"><input id="nm" maxlength="12" placeholder="Your name" autocomplete="off"><button id="mk">Create game</button><input id="jc" maxlength="5" placeholder="Code" autocapitalize="characters" autocomplete="off"><button id="jn">Join</button></div>
 <div id="room" style="display:none"><span id="rc"></span><button id="cp">Share invite</button></div>
 <div class="bar" id="pick"><span style="font-size:14px">You play:</span><button class="sw on" id="cr" aria-label="Red"></button><button class="sw" id="cy" aria-label="Yellow"></button><button id="nw">New game</button></div>
 <div id="series" style="font-size:13px;opacity:.75;margin-bottom:2px"></div>
 <div id="status"><span id="dot"></span><span id="st"></span></div>
 <canvas id="cv" width="740" height="760"></canvas>
-<div class="score"><span>Red <b id="sr">0</b></span><span>Yellow <b id="sy">0</b></span><span>Draws <b id="s0">0</b></span></div>
+<div class="score"><div class="sc r" id="cardR"><div class="nm"><i class="dsc" style="background:radial-gradient(circle at 35% 30%,#ff8a82,#d41f1f)"></i><span id="lr">Red</span></div><b id="sr">0</b><div class="pips" id="pr"></div></div><div class="sc d"><div class="nm"><span>Draws</span></div><b id="s0">0</b></div><div class="sc y" id="cardY"><div class="nm"><i class="dsc" style="background:radial-gradient(circle at 35% 30%,#fff08a,#f2b600)"></i><span id="ly">Yellow</span></div><b id="sy">0</b><div class="pips" id="py"></div></div></div>
 <script>
 const C=7,R=6,S=100,P=10,T=110,W=C*S+2*P+20,FH=R*S+2*P,H=T+FH+40,OX=0;
 const cv=document.getElementById('cv'),x=cv.getContext('2d');
 const COL={1:['#ff7a72','#d41f1f','#8f0f0f'],2:['#fff07a','#f2b600','#9a7000']};
-let g,turn,over,win,anim,hover=-1,mode='bot',starter=1,score=[0,0,0],botTimer,swap=false,muted=false,AC,bestOf=3,room=null,me=1,peerHere=false,opp=null,roomCode='',matchWin=0,unsubs=[];
+let g,turn,over,win,anim,hover=-1,mode='bot',starter=1,score=[0,0,0],botTimer,swap=false,muted=false,AC,bestOf=3,room=null,me=1,peerHere=false,opp=null,roomCode='',matchWin=0,unsubs=[],oppName='';
 const CL=p=>COL[swap?3-p:p];
 const NM=p=>(swap?3-p:p)===1?'Red':'Yellow';
 const cx=c=>P+c*S+S/2, cy=r=>T+P+r*S+S/2;
@@ -335,14 +367,15 @@ function status(){
   $('series').textContent='Best of '+bestOf+' · first to '+n+' · Game '+(score[0]+score[1]+score[2]+(over?0:1));
   if(mode==='net'){
     if(!room||!peerHere){st.textContent=room?(me===1?'Waiting for a friend to join…':'Waiting for the host…'):'Create or join a game';dot.style.background='#999';}
-    else if(!over)st.textContent=turn===me?'Your turn':'Friend’s turn';
-    else if(win)st.textContent=win.p===me?'You win!':'Friend wins!';
+    else if(!over)st.textContent=turn===me?'Your turn':(oppName||'Friend')+'’s turn';
+    else if(win)st.textContent=win.p===me?'You win!':(oppName||'Friend')+' wins!';
   }
   if(mw){
     const you=mode==='bot'?mw===1:mode==='net'?mw===me:null;
-    st.textContent=you===null?NM(mw)+' wins the match! 🏆':you?'You win the match! 🏆':(mode==='bot'?'Bot':'Your friend')+' wins the match';
+    st.textContent=you===null?NM(mw)+' wins the match! 🏆':you?'You win the match! 🏆':(mode==='bot'?'Bot':(oppName||'Your friend'))+' wins the match';
   }
   $('nw').textContent=mw?'New match':over?'Next game':'New game';
+  scoreUI();
 }
 function canMe(){return mode!=='net'||!!(room&&peerHere&&turn===me&&!anim&&!over)}
 function idle(){return botTurn()||!canMe()}
@@ -359,7 +392,7 @@ function nextGame(){
   reset();
 }
 function colUI(){$('cr').classList.toggle('on',!swap);$('cy').classList.toggle('on',swap)}
-function sendSync(){fresh();if(room)room.emit('g',{t:'sync',bo:bestOf,sw:swap?1:0}).catch(()=>{})}
+function sendSync(){fresh();if(room)room.emit('g',{t:'sync',bo:bestOf,sw:swap?1:0,n:myName()}).catch(()=>{})}
 function tryMove(c,k){
   if(anim&&k<25)return setTimeout(()=>tryMove(c,k+1),150);
   if(over||turn===me)return;
@@ -368,15 +401,15 @@ function tryMove(c,k){
 function onMsg(m){
   if(m.isMe||!opp||m.peer!==opp)return;
   const d=m.data;if(!d||typeof d!=='object')return;
-  if(d.t==='hello'&&me===1)sendSync();
-  else if(d.t==='sync'&&me===2){bestOf=[3,5,7,9].includes(d.bo)?d.bo:3;swap=!!d.sw;$('bo').value=bestOf;colUI();fresh()}
+  if(d.t==='hello'&&me===1){gotName(d.n);sendSync()}
+  else if(d.t==='sync'&&me===2){bestOf=[3,5,7,9].includes(d.bo)?d.bo:3;swap=!!d.sw;$('bo').value=bestOf;colUI();fresh();gotName(d.n)}
   else if(d.t==='move'&&Number.isInteger(d.c)&&d.c>=0&&d.c<C)tryMove(d.c,0);
   else if(d.t==='next'&&over)applyNext();
 }
 function onPeers(ch){
   const o=ch.peers.find(p=>!p.isMe&&p.presence&&p.presence.role===(me===1?2:1));
-  const was=!!opp;opp=o?o.peer:null;peerHere=!!o;
-  if(o&&!was){if(me===1)sendSync();else room.emit('g',{t:'hello'}).catch(()=>{})}
+  const was=!!opp;opp=o?o.peer:null;peerHere=!!o;if(!o)oppName='';
+  if(o&&!was){if(me===1)sendSync();else room.emit('g',{t:'hello',n:myName()}).catch(()=>{})}
   status();
 }
 function netMsg(t,code){
@@ -385,7 +418,7 @@ function netMsg(t,code){
 function leaveRoom(){
   unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];
   if(room){try{room.leave()}catch(e){}}
-  room=null;peerHere=false;opp=null;me=1;roomCode='';
+  room=null;peerHere=false;opp=null;me=1;roomCode='';oppName='';$('nm').disabled=false;
   $('room').style.display='none';$('bo').disabled=false;
 }
 async function enter(c,host){
@@ -398,7 +431,7 @@ async function enter(c,host){
   unsubs.push(room.on('g',onMsg));
   unsubs.push(room.onPeers(onPeers));
   try{await room.presence({role:me})}catch(e){netMsg('That game is full or unavailable.');leaveRoom();return}
-  netMsg('Game code: '+c,true);
+  netMsg('Game code: '+c,true);$('nm').disabled=true;
   if(!host){$('pick').children[0].style.visibility='hidden';$('cr').style.display=$('cy').style.display='none';$('bo').disabled=true}
   fresh();
 }
@@ -437,9 +470,35 @@ $('jn').onclick=()=>{
   if(c.length===5)enter(c,false);else netMsg('Enter the 5-character code');
 };
 $('cp').onclick=async()=>{
-  const msg='Join my Connect 4 game! Code: '+roomCode+'\nhttps://lst-2k.github.io/connect4/?code='+roomCode;
+  const msg='Join my CO44ECT game! Code: '+roomCode+'\nhttps://lst-2k.github.io/connect4/?code='+roomCode;
   try{if(navigator.share)await navigator.share({text:msg});else await navigator.clipboard.writeText(msg);$('cp').textContent='Copied!';setTimeout(()=>$('cp').textContent='Share invite',1500)}catch(e){}
 };
+/* ---- player names ---- */
+const cleanName=v=>typeof v==='string'?v.replace(/[<>]/g,'').trim().slice(0,12):'';
+const myName=()=>cleanName($('nm').value)||(me===1?'Player 1':'Player 2');
+function toast(t){
+  const e=$('toast');e.textContent=t;e.classList.remove('show');void e.offsetWidth;e.classList.add('show');
+  tone(660,.15,.2,'triangle');tone(880,.2,.2,'triangle',.14);tone(1320,.3,.2,'triangle',.28);
+}
+function gotName(n){
+  const nm=cleanName(n)||(me===1?'Player 2':'Player 1');
+  const first=!oppName;oppName=nm;
+  if(first)toast(me===1?nm+' has joined!':'You joined '+nm+'’s game');
+  status();
+}
+try{$('nm').value=localStorage.getItem('c4name')||''}catch(e){}
+$('nm').addEventListener('input',()=>{try{localStorage.setItem('c4name',cleanName($('nm').value))}catch(e){}});
+addEventListener('pointerdown',()=>ac(),{passive:true});
+function scoreUI(){
+  const n=need(),nameOf=p=>mode==='bot'?(p===1?'You':'Bot'):mode==='net'?(p===me?myName():(oppName||'Friend')):NM(p);
+  [[swap?2:1,'lr','pr','cardR'],[swap?1:2,'ly','py','cardY']].forEach(([p,l,pp,c])=>{
+    $(l).textContent=nameOf(p);
+    $(pp).innerHTML=Array.from({length:n},(_,i)=>'<i class="pip'+(i<score[p]?' f':'')+'"></i>').join('');
+    $(c).classList.toggle('turn',!over&&p===turn&&!(mode==='net'&&!peerHere));
+    $(c).classList.toggle('win',matchWin===p);
+  });
+}
+$('nm').addEventListener('input',scoreUI);
 /* ---- background music ---- */
 const bgm=new Audio('connect4.mp3');bgm.loop=true;bgm.volume=.3;bgm.preload='auto';
 let musicOn=true;
@@ -458,6 +517,9 @@ $('mt').onclick=()=>{
 musicUI();
 reset();draw();
 try{const pc=new URLSearchParams(location.search).get('code');if(pc){setMode('net');$('jc').value=pc.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}}catch(e){}
+function updJoin(){$('jn').classList.toggle('pulse',mode==='net'&&!room&&$('jc').value.replace(/[^A-Za-z0-9]/g,'').length===5)}
+$('jc').addEventListener('input',updJoin);
+setInterval(updJoin,400);updJoin();
 /* ---- animated background ---- */
 (function(){
   const bg=document.getElementById('bg'),b=bg.getContext('2d');
