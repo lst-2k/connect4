@@ -25,6 +25,21 @@ h1 .b+.b{transform:rotate(5deg)}
 @keyframes pj{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(31,174,91,.65)}50%{transform:scale(1.12);box-shadow:0 0 0 12px rgba(31,174,91,0)}}
 @media (prefers-reduced-motion:reduce){h1 span,.pulse{animation:none}}
 #nm{text-transform:none;letter-spacing:0;width:130px}
+#jc{font-size:18px;width:130px;padding:11px 8px}
+#jn{font-size:18px;font-weight:800;padding:11px 26px;background:#1fae5b;color:#fff;border-color:#1fae5b;box-shadow:0 4px 0 #0f7a3c,0 8px 14px rgba(0,0,0,.3)}
+#jn.pulse{box-shadow:none}
+#mnu{display:none}
+body.playing :is(#m2,#mb,#mf,#lv,#bo,#cr,#cy,#pl,#net,#room){display:none!important}
+body.playing #mnu{display:inline-block}
+#inv{position:fixed;inset:0;z-index:60;background:rgba(10,14,25,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.invc{background:var(--card);border-radius:24px;padding:26px 22px 18px;text-align:center;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.invt{font-size:26px;font-weight:900;margin-bottom:6px}
+.invs{margin-bottom:16px;font-size:15px}
+.invs b{letter-spacing:3px;font-size:22px;margin-left:6px}
+#nm2{width:100%;text-transform:none;letter-spacing:0;margin-bottom:16px;font-size:18px;padding:13px}
+#jb{width:100%;font-size:24px;font-weight:900;padding:16px;border-radius:16px;background:#1fae5b;color:#fff;border:none;animation:pj 1s ease-in-out infinite}
+#jx{margin-top:12px;background:none;border:none;opacity:.7;font-size:14px}
+@media (prefers-reduced-motion:reduce){#jb{animation:none}}
 #toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translate(-50%,-140%);background:#1fae5b;color:#fff;font-weight:800;font-size:18px;padding:12px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:50;opacity:0;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{animation:tst 4s ease forwards}
 @keyframes tst{0%{opacity:0;transform:translate(-50%,-140%)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-140%)}}
@@ -64,6 +79,7 @@ input{font:inherit;font-size:14px;padding:8px 10px;width:110px;border-radius:10p
 <body>
 <canvas id="bg"></canvas>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="inv" style="display:none"><div class="invc"><div class="invt">You’re invited to play!</div><div class="invs">Game code<b id="invcode"></b></div><input id="nm2" maxlength="12" placeholder="Your name" autocomplete="off"><button id="jb">JOIN GAME</button><br><button id="jx">Not now</button></div></div>
 <h1 aria-label="CO44ECT"><span class="r" style="--i:0" aria-hidden="true">C</span><span class="y" style="--i:1" aria-hidden="true">O</span><span class="b" style="--i:2" aria-hidden="true">4</span><span class="b" style="--i:3" aria-hidden="true">4</span><span class="r" style="--i:4" aria-hidden="true">E</span><span class="y" style="--i:5" aria-hidden="true">C</span><span class="r" style="--i:6" aria-hidden="true">T</span></h1>
 <div class="bar">
   <button id="m2">2 Players</button>
@@ -73,10 +89,11 @@ input{font:inherit;font-size:14px;padding:8px 10px;width:110px;border-radius:10p
   <select id="bo"><option value="3">Best of 3</option><option value="5">Best of 5</option><option value="7">Best of 7</option><option value="9">Best of 9</option></select>
   <button id="mu" aria-label="Sound effects">🔊</button>
   <button id="mt" aria-label="Music">🎵</button>
+  <button id="mnu">☰ Menu</button>
 </div>
 <div class="bar" id="net" style="display:none"><input id="nm" maxlength="12" placeholder="Your name" autocomplete="off"><button id="mk">Create game</button><input id="jc" maxlength="5" placeholder="Code" autocapitalize="characters" autocomplete="off"><button id="jn">Join</button></div>
 <div id="room" style="display:none"><span id="rc"></span><button id="cp">Share invite</button></div>
-<div class="bar" id="pick"><span style="font-size:14px">You play:</span><button class="sw on" id="cr" aria-label="Red"></button><button class="sw" id="cy" aria-label="Yellow"></button><button id="nw">New game</button></div>
+<div class="bar" id="pick"><span id="pl" style="font-size:14px">You play:</span><button class="sw on" id="cr" aria-label="Red"></button><button class="sw" id="cy" aria-label="Yellow"></button><button id="nw">New game</button></div>
 <div id="series" style="font-size:13px;opacity:.75;margin-bottom:2px"></div>
 <div id="status"><span id="dot"></span><span id="st"></span></div>
 <canvas id="cv" width="740" height="760"></canvas>
@@ -85,7 +102,7 @@ input{font:inherit;font-size:14px;padding:8px 10px;width:110px;border-radius:10p
 const C=7,R=6,S=100,P=10,T=110,W=C*S+2*P+20,FH=R*S+2*P,H=T+FH+40,OX=0;
 const cv=document.getElementById('cv'),x=cv.getContext('2d');
 const COL={1:['#ff7a72','#d41f1f','#8f0f0f'],2:['#fff07a','#f2b600','#9a7000']};
-let g,turn,over,win,anim,hover=-1,mode='bot',starter=1,score=[0,0,0],botTimer,swap=false,muted=false,AC,bestOf=3,room=null,me=1,peerHere=false,opp=null,roomCode='',matchWin=0,unsubs=[],oppName='';
+let g,turn,over,win,anim,hover=-1,mode='bot',starter=1,score=[0,0,0],botTimer,swap=false,muted=false,AC,bestOf=3,room=null,me=1,peerHere=false,opp=null,roomCode='',matchWin=0,unsubs=[],oppName='',inMatch=false;
 const CL=p=>COL[swap?3-p:p];
 const NM=p=>(swap?3-p:p)===1?'Red':'Yellow';
 const cx=c=>P+c*S+S/2, cy=r=>T+P+r*S+S/2;
@@ -137,6 +154,7 @@ function lowest(c){for(let r=R-1;r>=0;r--)if(!g[r][c])return r;return -1}
 function drop(c){
   if(over||anim||c<0||c>=C||lowest(c)<0)return;
   anim={c,r:lowest(c),p:turn,y:45,vy:0,b:0,lr:-1};
+  playUI();
   tone(700,.1,.1,'sine',0,300);
 }
 function land(){
@@ -375,7 +393,7 @@ function status(){
     st.textContent=you===null?NM(mw)+' wins the match! 🏆':you?'You win the match! 🏆':(mode==='bot'?'Bot':(oppName||'Your friend'))+' wins the match';
   }
   $('nw').textContent=mw?'New match':over?'Next game':'New game';
-  scoreUI();
+  scoreUI();playUI();
 }
 function canMe(){return mode!=='net'||!!(room&&peerHere&&turn===me&&!anim&&!over)}
 function idle(){return botTurn()||!canMe()}
@@ -499,6 +517,30 @@ function scoreUI(){
   });
 }
 $('nm').addEventListener('input',scoreUI);
+function playUI(){
+  if(mode==='net')inMatch=!!(room&&peerHere);
+  else if(!inMatch&&(anim||g.some(r=>r.some(v=>v))))inMatch=true;
+  document.body.classList.toggle('playing',inMatch);
+  $('nw').style.display=(mode==='net'&&!over)?'none':'';
+}
+let mnuT=null;
+$('mnu').onclick=()=>{
+  const b=$('mnu');
+  if(!mnuT){b.textContent='Tap again to leave';mnuT=setTimeout(()=>{mnuT=null;b.textContent='☰ Menu'},2500);return}
+  clearTimeout(mnuT);mnuT=null;b.textContent='☰ Menu';
+  inMatch=false;
+  if(mode==='net'){leaveRoom();setMode('net')}else fresh();
+};
+function showInvite(){
+  const c=$('jc').value;if(c.length!==5)return;
+  $('invcode').textContent=c;$('nm2').value=$('nm').value;$('inv').style.display='flex';
+}
+$('jb').onclick=()=>{
+  ac();$('nm').value=cleanName($('nm2').value);
+  try{localStorage.setItem('c4name',$('nm').value)}catch(e){}
+  $('inv').style.display='none';enter($('jc').value.toUpperCase(),false);
+};
+$('jx').onclick=()=>{$('inv').style.display='none'};
 /* ---- background music ---- */
 const bgm=new Audio('connect4.mp3');bgm.loop=true;bgm.volume=.3;bgm.preload='auto';
 let musicOn=true;
@@ -516,7 +558,7 @@ $('mt').onclick=()=>{
 };
 musicUI();
 reset();draw();
-try{const pc=new URLSearchParams(location.search).get('code');if(pc){setMode('net');$('jc').value=pc.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5)}}catch(e){}
+try{const pc=new URLSearchParams(location.search).get('code');if(pc){setMode('net');$('jc').value=pc.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5);showInvite()}}catch(e){}
 function updJoin(){$('jn').classList.toggle('pulse',mode==='net'&&!room&&$('jc').value.replace(/[^A-Za-z0-9]/g,'').length===5)}
 $('jc').addEventListener('input',updJoin);
 setInterval(updJoin,400);updJoin();
